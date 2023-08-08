@@ -68,6 +68,29 @@ class FSRS:
 
     def mean_reversion(self, init: Tensor, current: Tensor) -> Tensor:
         return (self.w[3] * init + (1-self.w[3]) * current).realize()
+    
+    def weight_clip(self):
+        # min_bounds = Tensor([1, 0.1, 0.1, 0, 0, 0.1, 0.01, 0.5, 0.01, 0.01, 0.01, 0, 1])
+        # max_bounds = Tensor([10, 5, 5, 0.5, 2, 0.8, 1.5, 5, 0.2, 0.9, 2, 1, 10])
+        # self.w = self.w.clip(min_bounds, max_bounds)
+        # t is your tensor
+        w = self.w.chunk(13, 0)
+
+        w[0] = w[0].clip(1, 10)
+        w[1] = w[1].clip(0.1, 5)
+        w[2] = w[2].clip(0.1, 5)
+        w[3] = w[3].clip(0, 0.5)
+        w[4] = w[4].clip(0, 2)
+        w[5] = w[5].clip(0.1, 0.8)
+        w[6] = w[6].clip(0.01, 1.5)
+        w[7] = w[7].clip(0.5, 5)
+        w[8] = w[8].clip(0.01, 0.2)
+        w[9] = w[9].clip(0.01, 0.9)
+        w[10] = w[10].clip(0.01, 2)
+        w[11] = w[11].clip(0, 1)
+        w[12] = w[12].clip(1, 10)
+
+        self.w = Tensor.cat(*w)
 
 def pad_sequence(sequences, padding_value=0):
     """
@@ -170,9 +193,10 @@ if __name__ == "__main__":
             # tqdm.write(f"{avg_loss.numpy()}")
             avg_loss.backward()
             optim.step()
-            pbar.update(real_batch_size)
+            model.weight_clip()
             step_count += real_batch_size
             optim.lr = cosine_annealing_lr(optim.lr, step_count, total_iterations)
+            pbar.update(real_batch_size)
         tqdm.write(f"loss: {np.mean(loss_list)}")
         tqdm.write(f"{list(model.w.numpy())}")
 
