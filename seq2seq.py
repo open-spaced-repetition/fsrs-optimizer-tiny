@@ -43,7 +43,7 @@ class FSRS:
             new_s = np.zeros(X[:,1].shape[0], dtype=np.float32)
             index = np.nonzero((X[:,1].unsqueeze(1) == keys).numpy())
             new_s[index[0]] = self.s[index[1]]
-            new_s = Tensor(new_s)
+            new_s = Tensor(new_s, requires_grad=False)
             new_d = self.w[0] - self.w[1] * (X[:,1] - 3)
             new_d = new_d.clip(1, 10)
         else:
