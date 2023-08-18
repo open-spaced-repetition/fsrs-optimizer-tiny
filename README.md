@@ -1,5 +1,7 @@
 # FSRS Optimizer Tiny
 
+**Update**: The Rust-based optimizer is in progress. See [fsrs-optimizer-burn](https://github.com/open-spaced-repetition/fsrs-optimizer-burn).
+
 Rewrite [FSRS Optimizer](https://github.com/open-spaced-repetition/fsrs-optimizer) in [tinygrad](https://github.com/tinygrad/tinygrad). It is a work in progress.
 
 **Motivation**: We plan to integrate [FSRS](https://github.com/open-spaced-repetition/fsrs4anki), a modern spaced repetition algorithm, into [Anki](https://github.com/ankitects/anki), which requires a localized optimization module to train the parameters from users' review logs.
